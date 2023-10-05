@@ -1,60 +1,64 @@
 version: '3.5'
+
 services:
   ngnix:
     container_name: nginx
     volumes:
-    - wordpress:/var/www/wordpress
+      - WordPress:/var/www/html
     networks:
-    - inception
+      - mynetwork
     depends_on:
-    - wordpress
-    build: ./requirements/nginx/
+      - wordpress
+      - mariadb
+    build: requirements/nginx/
     env_file: .env
     ports:
-    - "443:443"
+      - "443:443"
     restart: on-failure
+
+  mariadb:
+    container_name: mariadb
+    networks:
+      - mynetwork
+    build: requirements/mariadb/
+    env_file: .env
+    volumes:
+      - db:/var/lib/mysql
+    restart: unless-stopped
 
   wordpress:
     container_name: wordpress
     env_file: .env
     volumes:
-    - wordpress:/var/www/wordpress
+      - WordPress:/var/www/html
     networks:
-    - inception
-    build: ./requirements/wordpress
+      - mynetwork
+    build: requirements/wordpress/
     depends_on:
-    - mariadb
+      - mariadb
     restart: on-failure
     expose: 
-    - "9000"
+      - "9000"
 
-  mariadb:
-    container_name: mariadb
-    networks:
-    - inception
-    build: ./requirements/mariadb/
-    env_file: .env
-    volumes:
-    - mariadb:/var/lib/mysql
-    restart: unless-stopped
-    expose:
-    - "3306"
 
 networks:
-  inception :
+  mynetwork:
+    name : mynetwork
     driver : bridge
 
 
 volumes:
-  wordpress:
-    driver: local
-    driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: '/Users/zak/data/wordpress'
-  mariadb:
+  db:
     driver: local
     driver_opts:
       type: 'none' 
       o: 'bind'
-      device: '/Users/zak/data/mariadb'
+      device: '/home/zak/data/db'
+
+  WordPress:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/home/zak/data/wordpress'
+      

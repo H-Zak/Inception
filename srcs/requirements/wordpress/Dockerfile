@@ -1,36 +1,21 @@
 FROM debian:bullseye
+RUN apt-get update && apt-get upgrade -y 
 
-RUN apt-get update -y && apt-get upgrade -y
-
-RUN apt-get -y install wget
-RUN apt-get install -y php7.3\
-						php-fpm\
-						php-mysql\
-						mariadb-client
-
-RUN wget https://fr.wordpress.org/wordpress-6.0-fr_FR.tar.gz -P /var/www
-RUN cd /var/www && tar -xzf wordpress-6.0-fr_FR.tar.gz && rm wordpress-6.0-fr_FR.tar.gz
-RUN	chown -R root:root /var/www/wordpress
-
-RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-RUN chmod +x wp-cli.phar
-RUN mv wp-cli.phar /usr/local/bin/wp
-RUN wp config create	--allow-root \
-											--dbname=$SQL_DATABASE \
-											--dbuser=$SQL_USER \
-											--dbpass=$SQL_PASSWORD \
-											--dbhost=mariadb:3306 --path='/var/www/wordpress'
-
-# To create the PID file (/run/php/php7.3-fpm.pid)
+# UDPATE & INSTALLATION
+RUN apt install unzip php curl wget redis php-redis php-mysqli php-fpm php-cgi php-curl php-gd php-mbstring php-xml php-xmlrpc php-soap php-intl php-zip -y
+RUN apt install default-mysql-client -y
+COPY ./conf/www.conf /etc/php/7.3/fpm/pool.d/
 RUN mkdir /run/php
 
-# To allow external connections
-COPY ./conf/www.conf /etc/php/7.3/fpm/pool.d/
+# FOR DEBUGIN
+RUN apt install iputils-ping -y
+RUN apt install vim -y
 
-# To create index.php  
-COPY ./conf/index.php    /var/www/html/wordpress/index.php
 
-# Is optional, just a metadata
-EXPOSE 9000 
+# FOR WORDPRESS
+COPY ./tools/install.sh /home/
+RUN chmod 777 /home/install.sh
 
-ENTRYPOINT ["/usr/sbin/php-fpm7.3","-F" ]
+EXPOSE 9000
+
+ENTRYPOINT ["/home/install.sh" ] 
