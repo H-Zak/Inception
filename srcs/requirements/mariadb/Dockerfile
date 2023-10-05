@@ -4,8 +4,9 @@ FROM debian:bullseye
 FROM debian:buster
 
 # UPDATE AND INSTALLATION
-RUN apt-get update
-RUN apt install -y mariadb-server 
+RUN apt-get update -y
+RUN apt-get ugrade -y
+RUN apt-get install mariadb-server -y
 
 # COPY THE CONF FOR THE BIND AND THE SQL SCRIPT FOR THE PRIVILEGE
 COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/

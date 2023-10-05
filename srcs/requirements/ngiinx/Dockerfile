@@ -22,3 +22,5 @@ RUN chmod 755 /var/www/html
 
 RUN chmod -R www-data:www-data /var/www/html
 
+
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
