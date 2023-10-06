@@ -17,9 +17,9 @@ down:
 
 clean:
 	@docker rm -f $$(docker ps -qa)
-	@docker volume rm -f $$(docker volume ls)
-	@docker image rm -f $$(docker image ls)
-	@docker network rm -f $$(docker network ls)
+	@docker volume rm -f $$(docker volume ls -q)
 	@sudo rm -rf /home/zak/data
+	@docker image rm -f $$(docker image ls -q)
+	@docker network rm mynetwork
 
 .PHONY: all clean fclean re
