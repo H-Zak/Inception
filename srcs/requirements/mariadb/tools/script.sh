@@ -1,6 +1,11 @@
 #!/bin/sh
-service mariadb start 
+# mysqld_safe &
+service mysqld start 
 
+
+# while ! mysqladmin ping --silent; do
+#     sleep 1
+# done
 sleep 2
 # CREATE USER #
 echo "CREATE USER '$BDD_USER'@'%' IDENTIFIED BY '$BDD_USER_PASSWORD';" | mysql
