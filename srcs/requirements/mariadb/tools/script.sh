@@ -1,6 +1,6 @@
 #!/bin/sh
 # mysqld_safe &
-service mysqld start 
+service mariadb start 
 
 
 # while ! mysqladmin ping --silent; do

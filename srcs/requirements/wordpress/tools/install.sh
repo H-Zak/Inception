@@ -23,3 +23,5 @@ else
     wp user create $WP_USER $WP_USER_EMAIL --user_pass=$WP_USER_PASSWORD --role=$WP_USER_ROLE --porcelain --allow-root 
     echo "END" 
 fi
+
+/usr/sbin/php-fpm7.4 -F
